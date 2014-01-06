@@ -6,7 +6,7 @@ public $pw = 'HTG2013';
 public $dbname = 'acsys_db';
 public $hostname = '10.3.0.46';
 public $data = array();
-private $table = 'vw_HTGRenewalReminder_test';//'vw_HTGRenewalReminder';
+private $table = 'vw_HTGRenewalReminder';
 
 public function __construct() {
     
@@ -15,37 +15,25 @@ public function __construct() {
 
 public function populateData()
 {
+    if( strtoupper(substr(PHP_OS, 0, 3)) =='LIN' )
+    {
     $conn = new PDO(
             "dblib:host=$this->hostname ; dbname=$this->dbname",
             "$this->username",
             "$this->pw"
             );
-//    switch (true)
-//    {
-//        case strtoupper(substr(PHP_OS, 0, 3)) =='LIN':
-//            $conn = new PDO(
-//            "dblib:host=$this->hostname ; dbname=$this->dbname",
-//            "$this->username",
-//            "$this->pw"
-//            );
-//            
-//        case strtoupper(substr(PHP_OS, 0, 3)) =='WIN':
-//           $conn = new PDO(
-//            "sqlsrv:server=$this->hostname ; Database=$this->dbname",
-//            "$this->username",
-//            "$this->pw",
-//            array(
-//                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-//                 )
-//            );
-//        default:
-//            $conn = new PDO(
-//            "dblib:host=$this->hostname ; dbname=$this->dbname",
-//            "$this->username",
-//            "$this->pw"
-//            );
-//    }
-    
+    }
+    elseif ( strtoupper(substr(PHP_OS, 0, 3)) =='WIN' ) 
+    {
+        $conn = new PDO(
+            "sqlsrv:server=$this->hostname ; Database=$this->dbname",
+            "$this->username",
+            "$this->pw",
+            array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                 )
+            );
+    }
     
     $qr = $conn->prepare('select distinct serialnumber from '.$this->table);
     $qr->execute();
@@ -82,14 +70,13 @@ public function sendSMS()
        {
           $mobile = $record['mobile'];
           $num_count = strlen($mobile);
-           if($num_count == 10 and $mobile == '0244304946' )
+           if($num_count == 10 )
            {
-               echo $mobile;//die();
                 $apiMessage = new ApiMessage();
                 $apiMessage->setFrom('Helios');
                 $apiMessage->setTo($this->formatNumber($mobile));
                 $apiMessage->setContent($this->composeMsg($record));
-                $apiMessage->setRegisteredDelivery(true);
+                //$apiMessage->setRegisteredDelivery(true);
                 $apiHost->getMessages()->send($apiMessage);
            }
            
