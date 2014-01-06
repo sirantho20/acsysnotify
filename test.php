@@ -6,4 +6,4 @@
  * and open the template in the editor.
  */
 
-echo stristr(PHP_OS, 'WIN');
+echo stristr(PHP_OS, 'LINUX');
