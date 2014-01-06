@@ -9,20 +9,38 @@ public $data = array();
 private $table = 'vw_HTGRenewalReminder_test';//'vw_HTGRenewalReminder';
 
 public function __construct() {
-
+    
     $this->populateData();
 }
 
 public function populateData()
 {
-    $conn = new PDO(
-    "sqlsrv:server=$this->hostname ; Database=$this->dbname",
-    "$this->username",
-    "$this->pw",
-    array(
-  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-)
-);
+    switch (true)
+    {
+        case stristr(PHP_OS, 'LINUX'):
+            $conn = new PDO(
+            "dblib:host=$this->hostname ; dbname=$this->dbname",
+            "$this->username",
+            "$this->pw"
+            );
+            
+       case stristr(PHP_OS, 'WIN'):
+           $conn = new PDO(
+            "sqlsrv:server=$this->hostname ; Database=$this->dbname",
+            "$this->username",
+            "$this->pw",
+            array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                 )
+            );
+        default:
+            $conn = new PDO(
+            "dblib:host=$this->hostname ; dbname=$this->dbname",
+            "$this->username",
+            "$this->pw"
+            );
+    }
+    
     
     $qr = $conn->prepare('select distinct serialnumber from '.$this->table);
     $qr->execute();
