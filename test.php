@@ -6,4 +6,4 @@
  * and open the template in the editor.
  */
 
-echo stristr(PHP_OS, 'LINUX');
+echo substr(PHP_OS, 0, 3);

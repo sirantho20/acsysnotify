@@ -17,14 +17,14 @@ public function populateData()
 {
     switch (true)
     {
-        case stristr(PHP_OS, 'LINUX') =='Linux':
+        case strtoupper(substr(PHP_OS, 0, 3)) =='LIN':
             $conn = new PDO(
             "dblib:host=$this->hostname ; dbname=$this->dbname",
             "$this->username",
             "$this->pw"
             );
             
-        case stristr(PHP_OS, 'WINNT') == 'WINNT':
+        case strtoupper(substr(PHP_OS, 0, 3)) =='WIN':
            $conn = new PDO(
             "sqlsrv:server=$this->hostname ; Database=$this->dbname",
             "$this->username",
