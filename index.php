@@ -24,7 +24,7 @@ public function populateData()
             "$this->pw"
             );
             
-       case stristr(PHP_OS, 'WIN'):
+       case stristr(PHP_OS, 'WINNT'):
            $conn = new PDO(
             "sqlsrv:server=$this->hostname ; Database=$this->dbname",
             "$this->username",
