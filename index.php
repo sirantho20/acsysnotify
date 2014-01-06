@@ -6,7 +6,7 @@ public $pw = 'HTG2013';
 public $dbname = 'acsys_db';
 public $hostname = '10.3.0.46';
 public $data = array();
-private $table = 'vw_HTGRenewalReminder';
+private $table = 'vw_HTGRenewalReminder_test';//'vw_HTGRenewalReminder';
 
 public function __construct() {
 
