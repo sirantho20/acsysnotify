@@ -1,0 +1,137 @@
+#!/bin/php
+<?php
+$isDebug = false;
+if ($isDebug)
+{
+	echo "Start to process\r\n";
+}
+if (!$isDebug)
+{
+  if (!file_exists($argv[1])) {
+	echo "File not found ACSYS ERR:1";
+	 exit;
+  }
+}
+$filename = "d:\\test\\GSM1.4JlT3Y";
+if ($isDebug)
+{
+	$filename = "d:\\test\\GSM1.4JlT3Y";
+}
+else
+{
+	$filename = $argv[1];
+	echo "FILENAME ACSYS: ".$filename;
+}
+$file = fopen($filename, "r") or exit("Unable to open file!");
+
+$i = 0;
+#$arr = new array()
+while (!feof($file))
+{
+	$arr[$i++] = fgets($file);
+}
+#gets the from mobile number
+$fromArr = explode(":", $arr[0]);
+$mobileNum = ltrim($fromArr[1]);
+
+if ($isDebug)
+{
+	echo "Mobile Number:".$mobileNum;
+}
+#gets the content length
+#$lenArr = explode(":", $arr[10]);
+#if (ltrim($lenArr[0]) = "Length"){
+#	$lenContent = ltrim($lenArr[1]);
+#}
+#gets the SMS content
+#step: combine the content, maybe the content is more than one line
+$smsContent = "";
+$j = 12; //sms content start from 13 line
+while ($j < sizeof($arr))
+{
+	$smsContent = $smsContent . $arr[$j];
+	$j = $j + 1;
+}
+#maybe the following line is available when the fact content length is bigger than the length
+#$smsContent = substr($smsContent,0,$lenContent);
+if ($isDebug)
+{
+	echo "SMS Message:".$smsContent;
+}
+fclose($file);
+
+//HTG content
+//$arr = explode(',',$smsContent);
+//$site_id = $arr[0];
+//$duration = $arr[1];
+$newSmsContent = '5702,'.$smsContent;
+
+#call web service to get the dynamic code
+$client = new SoapClient("http://10.3.0.46/AcsysCGSServer/CGSService.asmx?wsdl");
+$client->__setLocation("http://10.3.0.46/AcsysCGSServer/CGSService.asmx?basic");
+$result = $client->GetCGSDynamicPassword(array('param1' => $mobileNum, 'param2' => utf8_encode($newSmsContent)))->GetCGSDynamicPasswordResult;
+
+if (strlen($result)>0)
+{
+	#get the whole mobile number (country code + mobile number) and dynamic password for CGS key
+	$resultArr = explode("|", $result);
+    if ($resultArr[0]=="-10000")
+	{
+		#invalid mobile, use the from mobile number plus register country code to send
+		echo $mobileNum."is not registed in acsysware or invalid.";
+		$prefix = "91";
+		if (strpos($mobileNum,$prefix)>0)
+		{
+  			$mobileNum =$prefix.$mobileNum;
+		}
+		else if (strpos($mobileNum, $prefix)==false)
+		{ 
+  			$mobileNum =$prefix.$mobileNum;
+		}
+	}
+	else
+	{
+		$mobileNum = ltrim($resultArr[0]);
+	}
+	#generate the return sms message and put it to the outcoming queue
+	#get the dynamic key content
+	$msgContent = $resultArr[1];
+	$outgoingFile = "";
+	$sendContent = "";
+	if ($isDebug)
+	{
+		$outgoingFile = $outgoingFile."GSM1.Test";
+		$outgoingFile = 'd:\\test\\'.$outgoingFile;
+		$sendContent = "From:18676765012\n";
+	}
+	else
+	{
+		#$outgoingFile = date("Mdy", mktime())."$nt".rand(1,1000);
+		$outgoingFile = date("Mdy",mktime())."acsys".rand(1,1000);
+		$outgoingFile = '/mnt/flash/spool/outgoing/'.$outgoingFile;
+		$sendContent = "From: 00000000000\n";
+		#$sendContent = "From:$sender\n";
+		echo "ACSYS: sending reply";
+	}
+	$sendContent.="To: ".$mobileNum."\n";
+	$sendContent.="\n";
+	$sendContent.=$msgContent;
+	//$sendContent.=utf8_encode($newSmsContent);
+	echo $sendContent;
+	$f = fopen($outgoingFile, "wb");
+	fputs($f, $sendContent);
+	fclose($f);
+	#echo "<a href=http://192.168.1.99/direct_send?nphone=8618617061816&testo=This is a test from foxbox/>";
+	if($isDebug)
+	{
+		echo "\r\nSMS content had been written to file:".$outgoingFile;
+		echo "\r\nEnd to call";
+	}
+}
+?>
+>
+End to call";
+	}
+}
+?>
+>

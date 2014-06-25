@@ -58,13 +58,13 @@ public function populateData()
 
 public function sendSMS()
 {
-    include 'lib/smsgh/Api.php';
-        $apiHost = new SmsghApi();
-        $apiHost->setClientId('yvypnwwc');
-        $apiHost->setClientSecret('awizdeoi');
-        $apiHost->setContextPath("v3");
-        $apiHost->setHttps(true);
-        $apiHost->setHostname("api.smsgh.com");
+//    include 'lib/smsgh/Api.php';
+//        $apiHost = new SmsghApi();
+//        $apiHost->setClientId('yvypnwwc');
+//        $apiHost->setClientSecret('awizdeoi');
+//        $apiHost->setContextPath("v3");
+//        $apiHost->setHttps(true);
+//        $apiHost->setHostname("api.smsgh.com");
         
        foreach($this->data as $record)
        {
@@ -72,12 +72,15 @@ public function sendSMS()
           $num_count = strlen($mobile);
            if($num_count == 10 )
            {
-                $apiMessage = new ApiMessage();
-                $apiMessage->setFrom('Helios');
-                $apiMessage->setTo($this->formatNumber($mobile));
-                $apiMessage->setContent($this->composeMsg($record));
-                //$apiMessage->setRegisteredDelivery(true);
-                $apiHost->getMessages()->send($apiMessage);
+               $to = $this->formatNumber($mobile);
+               $msg = $this->composeMsg($record);
+               echo file_get_contents('http://10.3.0.13/acsys/sms/send.php?to='.$to.'&msg='.$msg)."\n";
+//                $apiMessage = new ApiMessage();
+//                $apiMessage->setFrom('Helios');
+//                $apiMessage->setTo($this->formatNumber($mobile));
+//                $apiMessage->setContent($this->composeMsg($record));
+//                //$apiMessage->setRegisteredDelivery(true);
+//                $apiHost->getMessages()->send($apiMessage);
            }
            
        }
