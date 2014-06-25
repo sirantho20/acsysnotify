@@ -73,8 +73,9 @@ public function sendSMS()
            if($num_count == 10 )
            {
                $to = $this->formatNumber($mobile);
-               $msg = $this->composeMsg($record);
+               $msg = urlencode($this->composeMsg($record));
                echo file_get_contents('http://10.3.0.13/acsys/sms/send.php?to='.'233270300345'.'&msg='.$msg).$msg."<br />";
+               break;
 //                $apiMessage = new ApiMessage();
 //                $apiMessage->setFrom('Helios');
 //                $apiMessage->setTo($this->formatNumber($mobile));
