@@ -74,7 +74,7 @@ public function sendSMS()
            {
                $to = $this->formatNumber($mobile);
                $msg = $this->composeMsg($record);
-               echo file_get_contents('http://10.3.0.13/acsys/sms/send.php?to='.$to.'&msg='.$msg).$msg."<br />";
+               echo file_get_contents('http://10.3.0.13/acsys/sms/send.php?to='.'233270300345'.'&msg='.$msg).$msg."<br />";
 //                $apiMessage = new ApiMessage();
 //                $apiMessage->setFrom('Helios');
 //                $apiMessage->setTo($this->formatNumber($mobile));
