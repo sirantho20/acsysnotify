@@ -10,9 +10,7 @@ $table = 'keyUsers';
 
     $conn = new PDO("dblib:host=$hostname ; dbname=$dbname","$username","$pw");
     
-    $smt = $conn->prepare("select right(rtrim(ltrim(telephone)),9) as telephone FROM keyUsers where len(telephone) > 5");
-    
-    $re = $smt->execute();
+    $re = $conn->query("select right(rtrim(ltrim(telephone)),9) as telephone FROM keyUsers where len(telephone) > 5");
     
     foreach($re as $record)
     {
