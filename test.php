@@ -16,7 +16,7 @@ $table = 'keyUsers';
     {
         $msg = "Hello, you can now get your HTG ACSYS key code by sending 5m (for 5 minutes) or 8h (for 8 minutes ) to 0270300362";
         echo 'sending to '.$record['telephone']."\n";
-        file_get_contents('http://10.3.0.13/smsgateway/api.php?to='.$to.'&msg='.$msg);
+        file_get_contents('http://10.3.0.13/smsgateway/api.php?to='.$to.'&msg='.urlencode($msg));
         
         
     }
